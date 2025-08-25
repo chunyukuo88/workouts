@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -15,8 +16,9 @@ func main() {
 
 	app.Logger.Println("app is running now ...")
 
+	http.HandleFunc("/health", HealthCheck)
 	server := &http.Server{
-		Addr:         "8080",
+		Addr:         ":8080",
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
@@ -27,4 +29,8 @@ func main() {
 		app.Logger.Println("oh crap")
 		app.Logger.Fatal(err)
 	}
+}
+
+func HealthCheck(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "\nStatus is available\n")
 }
