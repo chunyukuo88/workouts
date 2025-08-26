@@ -36,7 +36,3 @@ func main() {
 		app.Logger.Fatal(err)
 	}
 }
-
-func HealthCheck(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "\nStatus is available\n")
-}

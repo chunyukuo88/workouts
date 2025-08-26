@@ -17,3 +17,8 @@ func NewApplication() (*Application, error) {
 
 	return app, nil
 }
+
+
+func HealthCheck(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "\nStatus is available\n")
+}
