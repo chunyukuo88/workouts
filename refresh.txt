@@ -1,0 +1,9 @@
+docker compose down -v
+
+docker image ls -q | xargs -I {} docker image rm -f {}
+
+docker compose up --build
+
+psql -h localhost -U postgres -d postgres
+
+go run main.go

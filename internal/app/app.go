@@ -9,6 +9,7 @@ import (
 
 	"github.com/chunyukuo88/workouts/internal/api"
 	"github.com/chunyukuo88/workouts/internal/store"
+	"github.com/chunyukuo88/workouts/migrations"
 )
 
 type Application struct {
@@ -19,11 +20,15 @@ type Application struct {
 
 func NewApplication() (*Application, error) {
 	pgDB, err := store.Open()
-
 	if err != nil {
 		return nil, err
 	}
 
+	err = store.MigrateFS(pgDB, migrations.FS, ".")
+	if err != nil {
+		fmt.Println("\n😔 Failed at app.go/store.MigrateFS()")
+		panic(err)
+	}
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
 	workoutHandler := api.NewWorkoutHandler()
