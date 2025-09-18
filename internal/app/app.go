@@ -19,24 +19,26 @@ type Application struct {
 }
 
 func NewApplication() (*Application, error) {
-	pgDB, err := store.Open()
+	database, err := store.Open()
 	if err != nil {
 		return nil, err
 	}
 
-	err = store.MigrateFS(pgDB, migrations.FS, ".")
+	err = store.MigrateFS(database, migrations.FS, ".")
 	if err != nil {
 		fmt.Println("\n😔 Failed at app.go/store.MigrateFS()")
 		panic(err)
 	}
 	logger := log.New(os.Stdout, "", log.Ldate|log.Ltime)
 
-	workoutHandler := api.NewWorkoutHandler()
+	workoutStore := store.NewSqliteWorkoutStore(database)
+
+	workoutHandler := api.NewWorkoutHandler(workoutStore)
 
 	app := &Application{
 		Logger:         logger,
 		WorkoutHandler: workoutHandler,
-		DB:             pgDB,
+		DB:             database,
 	}
 
 	return app, nil
